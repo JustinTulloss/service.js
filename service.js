@@ -34,14 +34,21 @@
       }
       return serviceProtos[name].length;
     },
+    // Unregisters a particular service. Can also unregister all of a particular
+    // service's implementations if not passed a particular service.
     unregister: function(name, service) {
       var serviceList = serviceProtos[name];
-      for (var i = 0; i < serviceList.length; i++) {
-        if (serviceList[i] === service) {
-          serviceList.splice(i, 1);
+      if (service) {
+        for (var i = 0; i < serviceList.length; i++) {
+          if (serviceList[i] === service) {
+            serviceList.splice(i, 1);
+          }
         }
+        return serviceList.length;
+      } else {
+        delete serviceProtos[name];
+        return 0;
       }
-      return serviceList.length;
     },
     start: function(serviceNames) {
       if (typeof serviceNames === 'string') {

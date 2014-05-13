@@ -10,13 +10,13 @@ node_modules: package.json
 jshint: | node_modules
 	$(JSHINT) *.js
 
-test: service.node.js | node_modules
+test: node_modules/service.js | node_modules
 	$(MOCHA) $(MOCHAFLAGS)
 
 %.min.js: %.js | node_modules
 	$(UGLIFY) $^ > $@
 
-%.node.js: %.js
+node_modules/%.js: %.js
 	printf "Q = require('q');\nmodule.exports=" > $@
 	cat $^ >> $@
 
