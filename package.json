@@ -1,0 +1,38 @@
+{
+  "name": "service.js",
+  "version": "0.0.0",
+  "description": "A library for managing global services which can have multiple implementations.",
+  "main": "service.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JustinTulloss/service.js.git"
+  },
+  "keywords": [
+    "services",
+    "service"
+  ],
+  "author": "Justin Tulloss",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JustinTulloss/service.js/issues"
+  },
+  "jshintConfig": {
+    "loopfunc": true,
+    "newcap": false
+  },
+  "homepage": "https://github.com/JustinTulloss/service.js",
+  "devDependencies": {
+    "jshint": "^2.5.0",
+    "mocha": "^1.18.2",
+    "uglify-js": "^2.4.13",
+    "chai": "^1.9.1",
+    "chai-as-promised": "^4.1.1",
+    "coffee-script": "^1.7.1"
+  },
+  "dependencies": {
+    "q": "^1.0.1"
+  }
+}
