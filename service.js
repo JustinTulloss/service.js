@@ -36,6 +36,8 @@
     },
     // Unregisters a particular service. Can also unregister all of a particular
     // service's implementations if not passed a particular service.
+    //
+    // Returns the number of remaining implementations.
     unregister: function(name, service) {
       var serviceList = serviceProtos[name];
       if (service) {
@@ -65,7 +67,7 @@
           function attemptToStart(j) {
             var instance = Object.create(serviceList[j]);
             instance.onInitialize();
-            var isUsable = instance.isUsable();
+            var isUsable = Q(instance.isUsable());
             return isUsable.then(function(usable) {
               if (usable) {
                 var startPromise = instance.onStart() || Q(instance);
@@ -109,7 +111,7 @@
       // current environment. Can return a promise if figuring out the answer
       // is asynchronous.
       isUsable: function() {
-        return Q.resolve(true);
+        return true;
       }
     }
   };

@@ -9,9 +9,7 @@ describe 'Services', ->
   describe 'registering', ->
     service = null
     beforeEach ->
-      service = Object.create(Services.Service, {
-        magic: ->
-      })
+      service = Object.create(Services.Service)
     afterEach ->
       Services.unregister('TestService')
 
@@ -20,4 +18,58 @@ describe 'Services', ->
 
     it 'Allows a service to be unregistered', ->
       Services.register('TestService', service)
-      expect(Services.unregister('TestService', service)).to.equal(0)
+      Services.register('TestService', Object.create(Services.Service))
+      expect(Services.unregister('TestService', service)).to.equal(1)
+
+    it 'Allows all of a particular service to be unregistered', ->
+      Services.register('TestService', service)
+      Services.register('TestService', Object.create(Services.Service))
+      expect(Services.unregister('TestService')).to.equal(0)
+
+  describe 'starting', ->
+    service = null
+    beforeEach ->
+      service = Object.create(Services.Service)
+      Services.register('TestService', service)
+    afterEach ->
+      Services.unregister('TestService')
+
+    it 'returns a promise that resolves if nothing happens in onStart', ->
+      expect(Services.start('TestService')).to.eventually.eql([service])
+
+    it 'returns a promise that resolves when a promise returned from onStart is resolved', ->
+      defer = Q.defer()
+      service.onStart = -> defer.promise
+      setTimeout(
+        -> defer.resolve()
+      , 2)
+      expect(Services.start('TestService')).to.eventually.eql([service])
+
+    describe 'isUsable', ->
+      service2 = null
+      beforeEach ->
+        service2 = Object.create(Services.Service)
+        Services.register('TestService', service2)
+
+      it 'uses the second implementation if the first is not usable', ->
+        service.isUsable = -> false
+        expect(Services.start('TestService')).to.eventually.eql([service2])
+
+      it 'uses the second implementation if the first is not usable async', ->
+        deferred = Q.defer()
+        service.isUsable = -> deferred.promise
+        setTimeout(
+          -> deferred.resolve(false)
+        , 2)
+        expect(Services.start('TestService')).to.eventually.eql([service2])
+
+      it 'rejects the start if no implementations are usable', ->
+        deferred = Q.defer()
+        service.isUsable = -> false
+        service2.isUsable = -> deferred.promise
+        setTimeout(
+          -> deferred.resolve(false)
+        , 2)
+        expect(Services.start('TestService')).to.eventually.be.rejected
+
+  describe 'stopping', ->
