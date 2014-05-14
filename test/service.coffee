@@ -126,6 +126,22 @@ describe 'Services', ->
       Services.ready('TestService').spread (instance) ->
         expect(service.isPrototypeOf(instance)).to.be.true
 
-    it 'resolves when multiple services are ready'
-    it 'throws if ready is called before start'
-    it 'rejects if ready is called on a service that failed to start'
+    it 'resolves when multiple services are ready', ->
+      deferred = Q.defer()
+      service2 = Object.create(Services.Service)
+      service2.onStart = -> deferred.promise
+      Services.register('TestService2', service2)
+      Services.start('TestService2')
+      setTimeout(->
+        deferred.resolve()
+      , 1)
+      Services.ready('TestService', 'TestService2').spread (instance, instance2) ->
+        expect(service.isPrototypeOf(instance)).to.be.true
+        expect(service2.isPrototypeOf(instance2)).to.be.true
+
+    it 'throws if ready is called before start', ->
+      expect(-> Services.ready('Bogus')).to.throw(Error)
+
+    it 'throws if ready is called on a service that failed to start', ->
+      service.onStart = -> throw new Error("Could not start")
+      expect(-> Services.ready('Bogus')).to.throw(Error)
