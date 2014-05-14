@@ -1,6 +1,11 @@
-chai = require 'chai'
-chaiAsPromised = require 'chai-as-promised'
-Services = require 'service'
+if typeof require != 'undefined'
+  chai = require 'chai'
+  chaiAsPromised = require 'chai-as-promised'
+  Services = require 'service'
+else
+  chai = window.chai
+  chaiAsPromised = window.chaiAsPromised
+  Services = window.Services
 
 chai.use(chaiAsPromised)
 expect = chai.expect
@@ -32,6 +37,7 @@ describe 'Services', ->
       service = Object.create(Services.Service)
       Services.register('TestService', service)
     afterEach ->
+      Services.stop('TestService')
       Services.unregister('TestService')
 
     it 'returns a promise that resolves if nothing happens in onStart', ->
@@ -44,6 +50,10 @@ describe 'Services', ->
         -> defer.resolve()
       , 2)
       expect(Services.start('TestService')).to.eventually.eql([service])
+
+    it 'does not allow you to double start a service', ->
+      Services.start('TestService')
+      expect(-> Services.start('TestService')).not.to.Throw
 
     describe 'isUsable', ->
       service2 = null
@@ -73,3 +83,15 @@ describe 'Services', ->
         expect(Services.start('TestService')).to.eventually.be.rejected
 
   describe 'stopping', ->
+    service = null
+    beforeEach ->
+      service = Object.create(Services.Service)
+      Services.register('TestService', service)
+    afterEach -> Services.unregister('TestService')
+
+    it 'allows all services to be stopped', (done) ->
+      service.onStop = done
+      Services.start('TestService')
+      Services.stop()
+
+    it 'allows a single type of service to be stopped'
