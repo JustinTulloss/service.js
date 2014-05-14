@@ -19,6 +19,7 @@
   <script>
     mocha.checkLeaks();
     mocha.globals(['jQuery', 'Services']);
+    // Hack to allow time for coffee script files to load
     setTimeout(mocha.run, 100);
   </script>
 </body>

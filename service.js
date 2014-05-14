@@ -13,7 +13,7 @@
   var serviceProtos = {};
   // This is actually not instances, but a map of names to promises
   // that produce instances.
-  var serviceInstances = {};
+  var servicePromises = {};
   var doNothing = function() {};
 
   // Services
@@ -39,6 +39,9 @@
     //
     // Returns the number of remaining implementations.
     unregister: function(name, service) {
+      if (servicePromises[name]) {
+        throw new Error("Cannot unregister a service that is starting or started");
+      }
       var serviceList = serviceProtos[name];
       if (service) {
         for (var i = 0; i < serviceList.length; i++) {
@@ -64,27 +67,38 @@
           // All this code would be cleaner with persistent data structures.
           var serviceName = serviceNames[i];
           var serviceList = serviceProtos[serviceName].slice(0);
+          if (servicePromises[serviceName]) {
+            throw new Error("Cannot start a service that's already started: " + serviceName);
+          }
           function attemptToStart(j) {
             var instance = Object.create(serviceList[j]);
             instance.onInitialize();
             var isUsable = Q(instance.isUsable());
-            return isUsable.then(function(usable) {
+            var startPromise = isUsable.then(function(usable) {
               if (usable) {
                 var startPromise = instance.onStart() || Q(instance);
                 // Guarantee that the final promise always resolves to the
                 // started instance of the service.
-                return startPromise.then(function() {
+                startPromise = startPromise.then(function() {
                   return instance;
+                }, function() {
+                  // If we did not successfully start, delete the start promise
+                  delete servicePromises[serviceName];
                 });
+                servicePromises[serviceName] = startPromise;
+                return startPromise;
               } else {
                 j++;
                 if (j < serviceList.length) {
                   return attemptToStart(j);
                 } else {
+                  delete servicePromises[serviceName];
                   throw new Error("No usable implementations of " + serviceName);
                 }
               }
             });
+            servicePromises[serviceName] = startPromise;
+            return startPromise;
           }
           promises.push(attemptToStart(0));
         }).call(this);
@@ -92,6 +106,22 @@
       return Q.all(promises);
     },
     stop: function(serviceNames) {
+      var name;
+      serviceNames = serviceNames || Object.keys(servicePromises);
+      if (typeof serviceNames === 'string') {
+        serviceNames = [serviceNames];
+      }
+      var promises = [];
+      for (var i = 0; i < serviceNames.length; i++) {
+        (function(name) {
+          if (!servicePromises[name]) { return; }
+          promises.push(servicePromises[name].done(function(instance) {
+            instance.onStop();
+            delete servicePromises[name];
+          }));
+        }).call(this, serviceNames[i]);
+      }
+      return Q.all(promises);
     },
     ready: function(serviceNames) {
     },

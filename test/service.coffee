@@ -37,8 +37,7 @@ describe 'Services', ->
       service = Object.create(Services.Service)
       Services.register('TestService', service)
     afterEach ->
-      Services.stop('TestService')
-      Services.unregister('TestService')
+      Services.stop('TestService').then -> Services.unregister('TestService')
 
     it 'returns a promise that resolves if nothing happens in onStart', ->
       expect(Services.start('TestService')).to.eventually.eql([service])
@@ -52,8 +51,8 @@ describe 'Services', ->
       expect(Services.start('TestService')).to.eventually.eql([service])
 
     it 'does not allow you to double start a service', ->
-      Services.start('TestService')
-      expect(-> Services.start('TestService')).not.to.Throw
+      Services.start('TestService').then ->
+        expect(-> Services.start('TestService')).to.throw(Error)
 
     describe 'isUsable', ->
       service2 = null
@@ -82,6 +81,10 @@ describe 'Services', ->
         , 2)
         expect(Services.start('TestService')).to.eventually.be.rejected
 
+      it 'wont behave as if things succeeded if there was an exception', ->
+        service.isUsable = -> throw new Error("Something bad happened")
+        expect(-> Services.start('TestService')).to.throw(Error, "Something bad happened")
+
   describe 'stopping', ->
     service = null
     beforeEach ->
@@ -90,8 +93,11 @@ describe 'Services', ->
     afterEach -> Services.unregister('TestService')
 
     it 'allows all services to be stopped', (done) ->
-      service.onStop = done
+      onStopCalled = false
+      service.onStop = -> onStopCalled = true
       Services.start('TestService')
-      Services.stop()
+      Services.stop().done ->
+        expect(onStopCalled).to.equal(true)
+        done()
 
     it 'allows a single type of service to be stopped'
