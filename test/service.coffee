@@ -97,7 +97,7 @@ describe 'Services', ->
     it 'allows all services to be stopped', (done) ->
       Services.start('TestService')
       Services.stop().done =>
-        expect(@onStopCalled).to.equal(true)
+        expect(@onStopCalled).to.be.true
         done()
 
     it 'allows a single type of service to be stopped', ->
@@ -107,7 +107,25 @@ describe 'Services', ->
       Services.register('TestService2', service2)
       Services.start('TestService')
       Services.stop('TestService').done =>
-        expect(@onStopCalled).to.equal(true)
-        expect(secondStopCalled).to.equal(false)
+        expect(@onStopCalled).to.be.true
+        expect(secondStopCalled).to.be.false
         Services.stop().then ->
           Services.unregister('TestService2')
+
+  describe 'ready', ->
+    service = null
+    beforeEach ->
+      service = Object.create(Services.Service)
+      Services.register('TestService', service)
+      Services.start('TestService')
+
+    afterEach ->
+      Services.stop().then -> Services.unregister('TestService')
+
+    it 'resolves when a service is ready', ->
+      Services.ready('TestService').spread (instance) ->
+        expect(service.isPrototypeOf(instance)).to.be.true
+
+    it 'resolves when multiple services are ready'
+    it 'throws if ready is called before start'
+    it 'rejects if ready is called on a service that failed to start'

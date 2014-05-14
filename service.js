@@ -55,10 +55,8 @@
         return 0;
       }
     },
-    start: function(serviceNames) {
-      if (typeof serviceNames === 'string') {
-        serviceNames = [serviceNames];
-      }
+    start: function() {
+      var serviceNames = arguments;
       var promises = [];
       for (var i = 0; i < serviceNames.length; i++) {
         (function() {
@@ -105,12 +103,9 @@
       }
       return Q.all(promises);
     },
-    stop: function(serviceNames) {
+    stop: function() {
       var name;
-      serviceNames = serviceNames || Object.keys(servicePromises);
-      if (typeof serviceNames === 'string') {
-        serviceNames = [serviceNames];
-      }
+      var serviceNames = arguments.length ? arguments : Object.keys(servicePromises);
       var promises = [];
       for (var i = 0; i < serviceNames.length; i++) {
         (function(name) {
@@ -123,7 +118,16 @@
       }
       return Q.all(promises);
     },
-    ready: function(serviceNames) {
+    ready: function() {
+      var promises = [];
+      for (var i = 0; i < arguments.length; i++) {
+        var name = arguments[i];
+        if (!servicePromises[name]) {
+          throw new Error(name + " was not started or failed to start");
+        }
+        promises.push(servicePromises[name]);
+      }
+      return Q.all(promises);
     },
     // A base prototype for
     Service: {
