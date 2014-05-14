@@ -89,15 +89,25 @@ describe 'Services', ->
     service = null
     beforeEach ->
       service = Object.create(Services.Service)
+      @onStopCalled = false
+      service.onStop = => @onStopCalled = true
       Services.register('TestService', service)
     afterEach -> Services.unregister('TestService')
 
     it 'allows all services to be stopped', (done) ->
-      onStopCalled = false
-      service.onStop = -> onStopCalled = true
       Services.start('TestService')
-      Services.stop().done ->
-        expect(onStopCalled).to.equal(true)
+      Services.stop().done =>
+        expect(@onStopCalled).to.equal(true)
         done()
 
-    it 'allows a single type of service to be stopped'
+    it 'allows a single type of service to be stopped', ->
+      service2 = Object.create(Services.Service)
+      secondStopCalled = false
+      service2.onStop = -> secondStopCalled = true
+      Services.register('TestService2', service2)
+      Services.start('TestService')
+      Services.stop('TestService').done =>
+        expect(@onStopCalled).to.equal(true)
+        expect(secondStopCalled).to.equal(false)
+        Services.stop().then ->
+          Services.unregister('TestService2')
