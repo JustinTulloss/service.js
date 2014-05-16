@@ -1,6 +1,6 @@
 {
   "name": "service-js",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A library for managing global service interfaces which can have multiple implementations.",
   "main": "./build/service.node.js",
   "scripts": {
