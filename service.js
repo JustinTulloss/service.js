@@ -69,9 +69,37 @@
         return 0;
       }
     },
-    // Starts all the services or a subset of services. Returns a promise that
-    // is resolved when the services have started. If a service fails to start,
-    // the 
+    // Starts all the services or a subset of services.
+    //
+    // For each service specified, this function will walk through the list of
+    // registered services and attempt to start them if they report that they
+    // are usable. If an implementation reports that it is not usable, the
+    // function will attempt to start the next registered service or will fail
+    // to start the service at all.
+    //
+    // Returns a promise that is resolved when the services have started or
+    // failed to start. The result of the returned promise is a list of
+    // promise snapshots that indicate which services succeeded and
+    // which failed.
+    //
+    // Calls the `onStart` delegate for the first usable implementation
+    // of a service. The `onStart` delegate can return a promise and `start`
+    // will not resolve its promise until all promises returned are resolved.
+    //
+    // ### Example
+    // ```js
+    // // Let's say that MyService succeeds and AnotherService fails...
+    // Services.start('MyService', 'AnotherService')
+    //   .spread(function(myServiceP, anotherServiceP) {
+    //     // => fullfilled rejected
+    //     console.log(myServiceP.state, anotherServiceP.state)
+    //     // => <MyService instance> <Error object>
+    //     console.log(myServiceP.value, anotherServiceP.reaston)
+    //   });
+    //
+    // // You can also call the function without arguments.
+    // Services.start(); // Attempts to start all registered services.
+    // ```
     start: function() {
       var serviceNames = arguments.length ? arguments : Object.keys(serviceProtos);
       var promises = [];
@@ -121,6 +149,20 @@
       }
       return Q.allSettled(promises);
     },
+    // Stops running services. Takes a variable number of service names as
+    // arguments or stops all services if no arguments are passed.
+    //
+    // Waits until all services that are being started are finished starting
+    // and then calls the `onStop` delegate of each running instance. Does
+    // not care what the `onStop` delegate does.
+    //
+    // This function will not fail if it's called twice or if a service that's
+    // requested to be stopped is not running.
+    //
+    // ### Example
+    // ```js
+    // Services.stop(); // Stops everything
+    // Services.stop('MyService'); // Stops MyService if it's running.
     stop: function() {
       var name;
       var serviceNames = arguments.length ? arguments : Object.keys(servicePromises);
@@ -136,6 +178,26 @@
       }
       return Q.all(promises);
     },
+    // Indicates that a set of services is ready to be used.
+    //
+    // This function should be used to declare that a bit of code depends on
+    // services being ready to be used. As such it will fail if any of the
+    // services asked for have failed to start.
+    //
+    // Returns a promise that resolves to a list of the services requested, or
+    // is rejected if any of the services haven't been started or failed to
+    // start.
+    //
+    // ### Example
+    // ```js
+    // Services.ready('MyService', 'AnotherService')
+    //   .spread(function(myService, anotherService) {
+    //     myService.doThings();
+    //     anotherService.doOtherThings();
+    //   }, function() {
+    //     throw Error("Couldn't do the things I wanted to do :(");
+    //   });
+    // ```
     ready: function() {
       var promises = [];
       for (var i = 0; i < arguments.length; i++) {
@@ -229,7 +291,8 @@
 
       // Called to determine whether this implementation can be used in the
       // current environment. Can return a promise if figuring out the answer
-      // is asynchronous.
+      // is asynchronous. This should either return a truthy or falsy value
+      // or return a promise that will resolve to a truthy or falsy value.
       isUsable: function() {
         return true;
       }
