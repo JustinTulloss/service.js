@@ -99,4 +99,4 @@ Files will end up in the `build` directory.
 
 [status-img]: https://api.travis-ci.org/JustinTulloss/service.js.svg
 [status-page]: https://travis-ci.org/JustinTulloss/service.js
-[api]: docs/Services.html
+[api]: http://justintulloss.github.io/service.js/
