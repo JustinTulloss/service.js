@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset="utf-8">
+  <title>Verify require.js works</title>
+  <script src="require.js"></script>
+</head>
+<body>
+  <script>
+    require.config({
+      paths: {
+        "q": "../node_modules/q/q"
+      }
+    });
+    require(["../build/service.amd"], function(Services) {
+      if (!Services) {
+        document.write("Cold not load services with require.js!");
+      } else {
+        document.write("Successfully loaded services");
+      }
+      console.log(Services);
+    });
+  </script>
+</body>
+</html>
+
+
