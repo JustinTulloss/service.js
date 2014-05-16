@@ -1,3 +1,4 @@
+# Some nonsense to make these tests run in both browser and node environments
 if typeof require != 'undefined'
   chai = require 'chai'
   chaiAsPromised = require 'chai-as-promised'
@@ -92,7 +93,7 @@ describe 'Services', ->
       @onStopCalled = false
       service.onStop = => @onStopCalled = true
       Services.register('TestService', service)
-    afterEach -> Services.unregister('TestService')
+    afterEach -> Services.stop().then -> Services.unregister('TestService')
 
     it 'allows all services to be stopped', (done) ->
       Services.start('TestService')
