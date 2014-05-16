@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Namespace: Services</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <script src="scripts/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/jaguar.css">
+    
+    
+    <script>
+    var config = {"monospaceLinks":false,"cleverLinks":true,"applicationName":"Service.js","default":{}};
+    </script>
+    
+
+    
+</head>
+<body>
+<div id="wrap" class="clearfix">
+    
+<div class="navigation">
+    <h3 class="applicationName"><a href="index.html">Service.js</a></h3>
+
+    <div class="search">
+        <input id="search" type="text" class="form-control input-sm" placeholder="Search Documentations">
+    </div>
+    <ul class="list">
+    
+        <li class="item" data-name="Services">
+            <span class="title">
+                <a href="Services.html">Services</a>
+                
+                <span class="static">static</span>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Services.ready"><a href="Services.html#ready">ready</a></li>
+            
+                <li data-name="Services.register"><a href="Services.html#register">register</a></li>
+            
+                <li data-name="Services.start"><a href="Services.html#start">start</a></li>
+            
+                <li data-name="Services.status"><a href="Services.html#status">status</a></li>
+            
+                <li data-name="Services.stop"><a href="Services.html#stop">stop</a></li>
+            
+                <li data-name="Services.unregister"><a href="Services.html#unregister">unregister</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Services.Service">
+            <span class="title">
+                <a href="Services.Service.html">Services.Service</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Services.Service.isUsable"><a href="Services.Service.html#isUsable">isUsable</a></li>
+            
+                <li data-name="Services.Service.onInitialize"><a href="Services.Service.html#onInitialize">onInitialize</a></li>
+            
+                <li data-name="Services.Service.onStart"><a href="Services.Service.html#onStart">onStart</a></li>
+            
+                <li data-name="Services.Service.onStop"><a href="Services.Service.html#onStop">onStop</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+    </ul>
+</div>
+    <div class="main">
+        <h1 class="page-title" data-filename="Services.html">Namespace: Services</h1>
+        
+
+
+
+<section>
+    
+<header>
+    <h2>
+    Services
+    </h2>
+    
+</header>  
+
+<article>
+    <div class="container-overview">
+    
+    
+    
+        
+            <div class="description"><p><code>Services</code> is the namespace for the services library. It contains
+functions for registering service implementations and starting/stopping
+services.</p></div>
+        
+        
+        
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+        
+        
+    
+    </div>
+    
+    
+    
+    
+    
+    
+    
+    
+        <h3 class="subsection-title">Classes</h3>
+        
+        <dl>
+            <dt><a href="Services.Service.html">Service</a></dt>
+            <dd></dd>
+        </dl>
+    
+    
+    
+    
+    
+    
+    
+        <h3 class="subsection-title">Methods</h3>
+        
+        <dl>
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="ready">
+            
+            <span class="type-signature static">static</span>Services.ready<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Q.promise}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            /Users/justin/src/service.js/service.js, line 220
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Indicates that a set of services is ready to be used.</p>
+<p>This function should be used to declare that a bit of code depends on
+services being ready to be used. As such it will fail if any of the
+services asked for have failed to start.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+
+<h5>Returns:</h5>
+promise that resolves to a list of the services requested, or
+is rejected if any of the services haven't been started or failed to
+start.
+<br />
+
+    
+    
+    
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code>Services.ready('MyService', 'AnotherService')
+  .spread(function(myService, anotherService) {
+    myService.doThings();
+    anotherService.doOtherThings();
+  }, function() {
+    throw Error("Couldn't do the things I wanted to do :(");
+  });</code></pre>
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="register">
+            
+            <span class="type-signature static">static</span>Services.register<span class="signature">(name, service)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{number}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            /Users/justin/src/service.js/service.js, line 45
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Registers a service implementation.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>The name of the service you're registering an
+implementation for.</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>service</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>The implementation of the service. Should
+have <a href="Services.Service.html"><code>Services.Service</code></a> as its prototype or implement all the same
+methods.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+
+<h5>Returns:</h5>
+priority of this implementation (aka the number of
+implementations available).
+<br />
+
+    
+    
+    
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code>var DefaultImplementation = Object.create(Services.Service);
+Services.register('MyService', DefaultImplementation);</code></pre>
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="start">
+            
+            <span class="type-signature static">static</span>Services.start<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Q.promise}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            /Users/justin/src/service.js/service.js, line 118
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Starts all the services or a subset of services.</p>
+<p>For each service specified, this function will walk through the list of
+registered services and attempt to start them if they report that they
+are usable. If an implementation reports that it is not usable, the
+function will attempt to start the next registered service or will fail
+to start the service at all.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+
+<h5>Returns:</h5>
+promise that is resolved when the services have
+started or failed to start. The result of the returned promise is a list
+of promise snapshots that indicate which services succeeded and
+which failed.</li>
+</ul>
+Calls the <code>onStart</code> delegate for the first usable implementation
+of a service. The <code>onStart</code> delegate can return a promise and <code>start</code>
+will not resolve its promise until all promises returned are resolved.
+<br />
+
+    
+    
+    
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code>// Let's say that MyService succeeds and AnotherService fails...
+Services.start('MyService', 'AnotherService')
+  .spread(function(myServiceP, anotherServiceP) {
+    // => fullfilled rejected
+    console.log(myServiceP.state, anotherServiceP.state)
+    // => <MyService instance> <Error object>
+    console.log(myServiceP.value, anotherServiceP.reaston)
+  });
+
+// You can also call the function without arguments.
+Services.start(); // Attempts to start all registered services.</code></pre>
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="status">
+            
+            <span class="type-signature static">static</span>Services.status<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{object}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            /Users/justin/src/service.js/service.js, line 267
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>A function that allows you to inspect the current state of the various
+running services.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+
+<h5>Returns:</h5>
+object with two properties: <code>registered</code>
+and <code>running</code>.
+This is useful information to contain in error reporting.
+<code>registered</code> is an object with the registered service
+names as its properties and the number of implementations registered as
+the values.
+<code>running</code> returns an object with the started or starting service names
+as its properties and a state snapshot as its value. The state snapshot
+contains a <code>state</code> property indicating whether the service has started
+yet or not and, if it has, the implementation that's running.
+<br />
+
+    
+    
+    
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code>{
+   registered: {
+     MyService: 1,
+     AnotherService: 2,
+     UnusedService: 1
+   },
+   running: {
+     MyService: { state: "pending" },
+     AnotherService: {
+       state: "running",
+       value: <the instance of the running service>
+     }
+   }
+}</code></pre>
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="stop">
+            
+            <span class="type-signature static">static</span>Services.stop<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            /Users/justin/src/service.js/service.js, line 184
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Stops running services. Takes a variable number of service names as
+arguments or stops all services if no arguments are passed.</p>
+<p>Waits until all services that are being started are finished starting
+and then calls the <code>onStop</code> delegate of each running instance. Does
+not care what the <code>onStop</code> delegate does.</p>
+<p>This function will not fail if it's called twice or if a service that's
+requested to be stopped is not running.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code>Services.stop(); // Stops everything
+Services.stop('MyService'); // Stops MyService if it's running.</code></pre>
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="unregister">
+            
+            <span class="type-signature static">static</span>Services.unregister<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{number}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            /Users/justin/src/service.js/service.js, line 68
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Unregisters a particular service. Can also unregister all of a particular
+service's implementations if not passed a particular service.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+
+<h5>Returns:</h5>
+number of remaining implementations.
+<br />
+
+    
+    
+    
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code>// Unregisters one implementation of the service called `service`
+Services.unregister('MyService', service);
+
+// Unregisters all services implementing MyService
+Services.unregister('MyService');</code></pre>
+    
+
+    
+</dd>
+
+        </dl>
+    
+    
+    
+    
+    
+</article>
+
+</section>  
+
+
+
+
+
+        
+
+        <footer>
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha5</a> on Fri May 16 2014 15:04:09 GMT-0700 (PDT)
+        </footer>
+    </div>
+</div>
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+<script src="scripts/main.js"></script>
+</body>
+</html>
