@@ -138,6 +138,7 @@ describe 'Services', ->
       Services.ready('TestService', 'TestService2').spread (instance, instance2) ->
         expect(service.isPrototypeOf(instance)).to.be.true
         expect(service2.isPrototypeOf(instance2)).to.be.true
+        Services.stop('TestService2').then -> Services.unregister('TestService2')
 
     it 'throws if ready is called before start', ->
       expect(-> Services.ready('Bogus')).to.throw(Error)
@@ -145,3 +146,25 @@ describe 'Services', ->
     it 'throws if ready is called on a service that failed to start', ->
       service.onStart = -> throw new Error("Could not start")
       expect(-> Services.ready('Bogus')).to.throw(Error)
+
+  describe 'status', ->
+    it 'returns an object with `running` and `registered` properties`', ->
+      expect(Services.status()).to.have.keys(['running', 'registered'])
+    it 'returns the correct services for running and registered', ->
+      service = Object.create(Services.Service)
+      service2 = Object.create(Services.Service)
+      Services.register('TestService', service)
+      Services.register('TestService2', service2)
+      Services.start('TestService').then ->
+        expect(Services.status()).to.eql({
+          registered: {
+            TestService: 1
+            TestService2: 1
+          }
+          running: {
+            TestService: {
+              state: 'fulfilled'
+              value: service
+            }
+          }
+        })

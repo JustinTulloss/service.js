@@ -129,7 +129,58 @@
       }
       return Q.all(promises);
     },
-    // A base prototype for
+    // A function that allows you to inspect the current state of the various
+    // running services. It returns an object with two properties: `registered`
+    // and `running`.
+    //
+    // This is useful information to contain in error reporting.
+    //
+    // `registered` is an object with the registered service
+    // names as its properties and the number of implementations registered as
+    // the values.
+    //
+    // `running` returns an object with the started or starting service names
+    // as its properties and a state snapshot as its value. The state snapshot
+    // contains a `state` property indicating whether the service has started
+    // yet or not and, if it has, the implementation that's running.
+    //
+    // ### Example
+    // ```js
+    // {
+    //    registered: {
+    //      MyService: 1,
+    //      AnotherService: 2,
+    //      UnusedService: 1
+    //    },
+    //    running: {
+    //      MyService: { state: "pending" },
+    //      AnotherService: {
+    //        state: "running",
+    //        value: <the instance of the running service>
+    //      }
+    //    }
+    // }
+    // ```
+    status: function() {
+      var i, name;
+      var registeredNames = Object.keys(serviceProtos);
+      var registered = {};
+      for (i = 0; i < registeredNames.length; i++) {
+        name = registeredNames[i];
+        registered[name] = serviceProtos[name].length;
+      }
+      var running = {};
+      var runningNames = Object.keys(servicePromises);
+      for (i = 0; i < runningNames.length; i++) {
+        name = runningNames[i];
+        running[name] = servicePromises[name].inspect();
+      }
+      return {
+        registered: registered,
+        running: running
+      };
+    },
+    // A base prototype for a service.
     Service: {
       // Called when object is first created. Must be synchronous.
       onInitialize: doNothing,
