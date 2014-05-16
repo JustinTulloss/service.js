@@ -1,0 +1,13 @@
+{
+  "plugins": [ "plugins/markdown" ],
+  "markdown": {
+    "parser": "gfm"
+  },
+  "templates": {
+    "applicationName": "Service.js",
+    "cleverLinks": true
+  },
+  "opts": {
+    "template": "node_modules/jaguarjs-jsdoc"
+  }
+}

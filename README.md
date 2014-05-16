@@ -28,7 +28,7 @@ The `SocketService` service uses websockets and registers itself first, thereby
 having a higher priority. However, if the client doesn't have WebSockets, the
 `PollingService` implementation of 'Socket' will be started instead.
 
-```js
+```javascript
 // Web socket implmentation of 'Socket'
 var WebSocketService = Object.create(Services.Service);
 WebSocketService.isUsable = function() {
@@ -50,7 +50,12 @@ Pubsub.subscribe = function() { /* subscribe to stuff */ }
 Services.register('Pubsub', Pubsub);
 
 // Later, in application code
+
+// This is usually called once after all services are registered and your app
+// is ready to start. In `window.onload` for instance.
 Services.start();
+
+// Anywhere in your app where you need to use a service, you can get access
 Services.ready('Pubsub').spread(function(pubsub) {
   // `pubsub` is an instance of the Pubsub service implementation
   pubsub.publish('up and running!');

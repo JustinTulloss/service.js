@@ -32,7 +32,8 @@
     "chai-as-promised": "^4.1.1",
     "coffee-script": "^1.7.1",
     "http-server": "^0.6.1",
-    "docco": "^0.6.3"
+    "jsdoc": "^3.3.0-alpha5",
+    "jaguarjs-jsdoc": "git+https://github.com/davidshimjs/jaguarjs-jsdoc.git"
   },
   "dependencies": {
     "q": "^1.0.1"
