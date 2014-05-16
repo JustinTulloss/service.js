@@ -41,7 +41,10 @@ describe 'Services', ->
       Services.stop('TestService').then -> Services.unregister('TestService')
 
     it 'returns a promise that resolves if nothing happens in onStart', ->
-      expect(Services.start('TestService')).to.eventually.eql([service])
+      expect(Services.start('TestService')).to.eventually.eql([{
+        state: 'fulfilled'
+        value: service
+      }])
 
     it 'returns a promise that resolves when a promise returned from onStart is resolved', ->
       defer = Q.defer()
@@ -49,11 +52,27 @@ describe 'Services', ->
       setTimeout(
         -> defer.resolve()
       , 2)
-      expect(Services.start('TestService')).to.eventually.eql([service])
+      expect(Services.start('TestService')).to.eventually.eql([{
+        state: 'fulfilled',
+        value: service
+      }])
 
     it 'does not allow you to double start a service', ->
       Services.start('TestService').then ->
         expect(-> Services.start('TestService')).to.throw(Error)
+
+    it 'starts all services if no services are specified', ->
+      expect(Services.start()).to.eventually.eql([{
+        state: 'fulfilled',
+        value: service
+      }])
+
+    it 'resolves with a failed promise snapshot if service fails to start', ->
+      service.onStart = -> Q.reject('Failed to start')
+      expect(Services.start('TestService')).to.eventually.eql([
+        state: 'rejected'
+        reason: 'Failed to start'
+      ])
 
     describe 'isUsable', ->
       service2 = null
@@ -63,7 +82,10 @@ describe 'Services', ->
 
       it 'uses the second implementation if the first is not usable', ->
         service.isUsable = -> false
-        expect(Services.start('TestService')).to.eventually.eql([service2])
+        expect(Services.start('TestService')).to.eventually.eql([{
+          state: 'fulfilled'
+          value: service2
+        }])
 
       it 'uses the second implementation if the first is not usable async', ->
         deferred = Q.defer()
@@ -71,16 +93,19 @@ describe 'Services', ->
         setTimeout(
           -> deferred.resolve(false)
         , 2)
-        expect(Services.start('TestService')).to.eventually.eql([service2])
+        expect(Services.start('TestService')).to.eventually.eql([
+          state: 'fulfilled'
+          value: service2
+        ])
 
-      it 'rejects the start if no implementations are usable', ->
+      it 'resolves the start with a rejection if no implementations are usable', ->
         deferred = Q.defer()
         service.isUsable = -> false
         service2.isUsable = -> deferred.promise
         setTimeout(
           -> deferred.resolve(false)
         , 2)
-        expect(Services.start('TestService')).to.eventually.be.rejected
+        expect(Services.start('TestService')).to.eventually.have.deep.property('[0].state', 'rejected')
 
       it 'wont behave as if things succeeded if there was an exception', ->
         service.isUsable = -> throw new Error("Something bad happened")

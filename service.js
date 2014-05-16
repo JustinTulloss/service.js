@@ -26,6 +26,12 @@
     // the implementation. The implementation should extend `Services.Service`.
     // Returns the priority of this implementation (aka the number of
     // implementations available).
+    //
+    // ### Example
+    // ```js
+    // var DefaultImplementation = Object.create(Services.Service);
+    // Services.register('MyService', DefaultImplementation);
+    // ```
     register: function(name, service) {
       if (serviceProtos[name]) {
         serviceProtos[name].push(service);
@@ -38,6 +44,14 @@
     // service's implementations if not passed a particular service.
     //
     // Returns the number of remaining implementations.
+    // ### Example
+    // ```js
+    // // Unregisters one implementation of the service called `service`
+    // Services.unregister('MyService', service);
+    //
+    // // Unregisters all services implementing MyService
+    // Services.unregister('MyService');
+    // ```
     unregister: function(name, service) {
       if (servicePromises[name]) {
         throw new Error("Cannot unregister a service that is starting or started");
@@ -55,8 +69,11 @@
         return 0;
       }
     },
+    // Starts all the services or a subset of services. Returns a promise that
+    // is resolved when the services have started. If a service fails to start,
+    // the 
     start: function() {
-      var serviceNames = arguments;
+      var serviceNames = arguments.length ? arguments : Object.keys(serviceProtos);
       var promises = [];
       for (var i = 0; i < serviceNames.length; i++) {
         (function() {
@@ -79,9 +96,10 @@
                 // started instance of the service.
                 startPromise = startPromise.then(function() {
                   return instance;
-                }, function() {
+                }, function(reason) {
                   // If we did not successfully start, delete the start promise
                   delete servicePromises[serviceName];
+                  throw reason;
                 });
                 servicePromises[serviceName] = startPromise;
                 return startPromise;
@@ -101,7 +119,7 @@
           promises.push(attemptToStart(0));
         }).call(this);
       }
-      return Q.all(promises);
+      return Q.allSettled(promises);
     },
     stop: function() {
       var name;
@@ -180,7 +198,24 @@
         running: running
       };
     },
-    // A base prototype for a service.
+    // Service
+    // -------
+    // A base prototype for a service. All other services should extend this one
+    // or implement every method that it implements.
+    //
+    // ### Example
+    // ```js
+    // var MyService = Object.create(Services.Service);
+    // // This uses underscore.js, which is not required.
+    // _.extend(MyService, {
+    //   onStart: function() {
+    //     // Do everything needed to start running.
+    //   },
+    //   myMethod: function() {
+    //     //...
+    //   }
+    // });
+    // ```
     Service: {
       // Called when object is first created. Must be synchronous.
       onInitialize: doNothing,
