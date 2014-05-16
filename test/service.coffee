@@ -2,7 +2,7 @@
 if typeof require != 'undefined'
   chai = require 'chai'
   chaiAsPromised = require 'chai-as-promised'
-  Services = require 'service'
+  Services = require '../build/service.node'
 else
   chai = window.chai
   chaiAsPromised = window.chaiAsPromised

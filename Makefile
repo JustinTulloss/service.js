@@ -15,7 +15,7 @@ node_modules: package.json
 jshint: | node_modules
 	$(JSHINT) *.js
 
-test: node_modules/service.js | node_modules
+test: build/service.node.js | node_modules
 	$(MOCHA) $(MOCHAFLAGS)
 
 test-amd: build/service.amd.js | node_modules
@@ -39,11 +39,11 @@ build/%.amd.js: build/%.min.js | build
 	cat $^ >> $@
 	printf "\n});" >> $@
 
-node_modules/%.js: %.js | node_modules
+build/%.node.js: %.js | node_modules
 	printf "Q = require('q');\nmodule.exports=" > $@
 	cat $^ >> $@
 
-release: jshint node_modules/service.js build/service.min.js build/service.amd.js docs
+release: jshint build/service.node.js build/service.min.js build/service.amd.js docs
 
 clean:
 	rm -rf docs build
