@@ -170,7 +170,6 @@
     // Services.stop('MyService'); // Stops MyService if it's running.
     // ```
     stop: function() {
-      var name;
       var serviceNames = arguments.length ? arguments : Object.keys(servicePromises);
       var promises = [];
       for (var i = 0; i < serviceNames.length; i++) {
