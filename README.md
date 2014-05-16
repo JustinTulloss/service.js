@@ -62,5 +62,41 @@ Services.ready('Pubsub').spread(function(pubsub) {
 });
 ```
 
+There is complete [API documentation][api] available.
+
+Using the library
+-----------------
+
+### In a browser
+
+Just include `build/service.min.js` in a script tag. Then `Services` will be
+globally available.
+
+#### If you use AMD
+
+- Copy build/service.amd.js to the appropriate place in your application, rename
+it service.js.
+- Then you can just `require(['service'] function(Services) {}` to your heart's
+content.
+
+### In Node.js
+`npm install service-js`
+
+Then in your app all you need to do is require it:
+
+`var Services = require('service-js');`
+
+Development
+-----------
+
+### Running tests
+`make test`
+
+### Building a release
+`make release`
+
+Files will end up in the `build` directory.
+
 [status-img]: https://api.travis-ci.org/JustinTulloss/service.js.svg
 [status-page]: https://travis-ci.org/JustinTulloss/service.js
+[api]: docs/Services.html
