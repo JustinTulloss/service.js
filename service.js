@@ -22,13 +22,14 @@
   // functions for registering service implementations and starting/stopping
   // services.
   var Services = {
+
     // Registers a service implementation. Takes the name of the service and
     // the implementation. The implementation should extend `Services.Service`.
     // Returns the priority of this implementation (aka the number of
     // implementations available).
     //
-    // ### Example
-    // ```js
+    // #### Example
+    // ```javascript
     // var DefaultImplementation = Object.create(Services.Service);
     // Services.register('MyService', DefaultImplementation);
     // ```
@@ -40,11 +41,13 @@
       }
       return serviceProtos[name].length;
     },
+
     // Unregisters a particular service. Can also unregister all of a particular
     // service's implementations if not passed a particular service.
     //
     // Returns the number of remaining implementations.
-    // ### Example
+    //
+    // #### Example
     // ```js
     // // Unregisters one implementation of the service called `service`
     // Services.unregister('MyService', service);
@@ -69,6 +72,7 @@
         return 0;
       }
     },
+
     // Starts all the services or a subset of services.
     //
     // For each service specified, this function will walk through the list of
@@ -86,7 +90,7 @@
     // of a service. The `onStart` delegate can return a promise and `start`
     // will not resolve its promise until all promises returned are resolved.
     //
-    // ### Example
+    // #### Example
     // ```js
     // // Let's say that MyService succeeds and AnotherService fails...
     // Services.start('MyService', 'AnotherService')
@@ -149,6 +153,7 @@
       }
       return Q.allSettled(promises);
     },
+
     // Stops running services. Takes a variable number of service names as
     // arguments or stops all services if no arguments are passed.
     //
@@ -159,10 +164,11 @@
     // This function will not fail if it's called twice or if a service that's
     // requested to be stopped is not running.
     //
-    // ### Example
+    // #### Example
     // ```js
     // Services.stop(); // Stops everything
     // Services.stop('MyService'); // Stops MyService if it's running.
+    // ```
     stop: function() {
       var name;
       var serviceNames = arguments.length ? arguments : Object.keys(servicePromises);
@@ -178,6 +184,7 @@
       }
       return Q.all(promises);
     },
+
     // Indicates that a set of services is ready to be used.
     //
     // This function should be used to declare that a bit of code depends on
@@ -188,7 +195,7 @@
     // is rejected if any of the services haven't been started or failed to
     // start.
     //
-    // ### Example
+    // #### Example
     // ```js
     // Services.ready('MyService', 'AnotherService')
     //   .spread(function(myService, anotherService) {
@@ -209,6 +216,7 @@
       }
       return Q.all(promises);
     },
+
     // A function that allows you to inspect the current state of the various
     // running services. It returns an object with two properties: `registered`
     // and `running`.
@@ -224,8 +232,9 @@
     // contains a `state` property indicating whether the service has started
     // yet or not and, if it has, the implementation that's running.
     //
-    // ### Example
-    // ```js
+    // #### Example
+    //
+    // ```javascript
     // {
     //    registered: {
     //      MyService: 1,
@@ -260,13 +269,15 @@
         running: running
       };
     },
-    // Service
-    // -------
+
+    // Services.Service
+    // ----------------
     // A base prototype for a service. All other services should extend this one
     // or implement every method that it implements.
     //
-    // ### Example
-    // ```js
+    // #### Example
+    //
+    // ```javascript
     // var MyService = Object.create(Services.Service);
     // // This uses underscore.js, which is not required.
     // _.extend(MyService, {
