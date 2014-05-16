@@ -24,7 +24,7 @@
     "loopfunc": true,
     "newcap": false
   },
-  "homepage": "https://github.com/JustinTulloss/service.js",
+  "homepage": "http://justintulloss.github.io/service.js/",
   "devDependencies": {
     "jshint": "^2.5.0",
     "mocha": "^1.18.2",
