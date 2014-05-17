@@ -67,10 +67,19 @@ There is complete [API documentation][api] available.
 Using the library
 -----------------
 
+Service.js relies heavily on the [Q promise library][q]. The AMD build declares
+the dependency, and the package.json file does as well. If you're just using
+script tags, you'll need to include the library.
+
+The library also relies on some ECMAScript 5 `Object` APIs, so if you want it
+to work in older browsers you'll need to include a [polyfill][polyfill].
+
 ### In a browser
 
 Just include `build/service.min.js` in a script tag. Then `Services` will be
 globally available.
+
+The minified version is < 2k in size and < 1k when gzipped.
 
 #### If you use AMD
 
@@ -102,3 +111,5 @@ Files will end up in the `build` directory.
 [status-img]: https://api.travis-ci.org/JustinTulloss/service.js.svg
 [status-page]: https://travis-ci.org/JustinTulloss/service.js
 [api]: http://justintulloss.github.io/service.js/
+[q]: https://github.com/kriskowal/q
+[polyfill]: https://github.com/es-shims/es5-shim/
